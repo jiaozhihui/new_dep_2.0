@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="untitled1" />
         <module name="new_dep - 副本" />
+        <module name="new_dep_1.1" />
         <module name="new_dep" />
       </profile>
     </annotationProcessing>

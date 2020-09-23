@@ -25,14 +25,14 @@ import scala.util.Random
  * 不要会报异常，字段数量超出限制
  */
 
-object Cleaned1 extends Logging {
+object Cleaned extends Logging {
 
   //  def fun(getVid: Int): Unit = {
   def main(args: Array[String]): Unit = {
 
-    val properties = new Properties()
-    properties.put("user", "root")
-    properties.put("password", "root")
+//    val properties = new Properties()
+//    properties.put("user", "root")
+//    properties.put("password", "root")
 
     logWarning("VideoCutMain开始运行")
 
@@ -46,13 +46,27 @@ object Cleaned1 extends Logging {
       .master("local[*]")
       .config("spark.debug.maxToStringFields", "300")
       .getOrCreate()
-    SparkSession.clearDefaultSession()
+
+    // 0.读取任务表
+    spark.read.format("jdbc")
+      //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+        "driver" -> "com.mysql.jdbc.Driver",
+        "user" -> confUtil.videocutMysqlUser,
+        "password" -> confUtil.videocutMysqlPassword,
+        "dbtable" -> "task"
+      ))
+      .load()
+      .createOrReplaceTempView("task")
+
 
     // 读取将要用到的表
     // 1.recognition2_behavior
     spark.read.format("jdbc")
       //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
-      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
@@ -63,7 +77,8 @@ object Cleaned1 extends Logging {
     // 2.recognition2_face
     spark.read.format("jdbc")
       //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
-      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
@@ -74,7 +89,8 @@ object Cleaned1 extends Logging {
     // 3.recognition2_object
     spark.read.format("jdbc")
       //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
-      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
@@ -85,7 +101,8 @@ object Cleaned1 extends Logging {
     // 4.recognition2_scene
     spark.read.format("jdbc")
       //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
-      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
@@ -96,7 +113,8 @@ object Cleaned1 extends Logging {
     // 5.class
     spark.read.format("jdbc")
       //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
-      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
@@ -108,7 +126,8 @@ object Cleaned1 extends Logging {
     // 6.kukai_videos
     spark.read.format("jdbc")
       //      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/ssp_db?characterEncoding=utf-8&useSSL=false",
-      .options(Map("url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
+      .options(Map(
+        "url" -> s"jdbc:mysql://${confUtil.videocutMysqlHost}:3306/video_wave?characterEncoding=utf-8&useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
@@ -132,7 +151,8 @@ object Cleaned1 extends Logging {
         "user" -> confUtil.videocutMysqlUser,
         "password" -> confUtil.videocutMysqlPassword,
         "dbtable" -> "kukai_videos"
-      )).load()
+      ))
+      .load()
       .select($"videoId" as "video_id", $"originalUrl" as "media_addr")
       .createOrReplaceTempView("bbb")
 
@@ -172,6 +192,8 @@ object Cleaned1 extends Logging {
         |    on recognition2_behavior.class_id = recognition2_class.class_id
         |join kukai_videos
         |on kukai_videos.videoId = media_id
+        |join task
+        |on task.video_id = media_id
         |union all
         |select recognition2_face.media_id video_id,
         |       kukai_videos.videoName media_name,
@@ -190,6 +212,8 @@ object Cleaned1 extends Logging {
         |    on recognition2_face.class_id = recognition2_class.class_id
         |join kukai_videos
         |on kukai_videos.videoId = media_id
+        |join task
+        |on task.video_id = media_id
         |union all
         |select recognition2_object.media_id video_id,
         |       kukai_videos.videoName media_name,
@@ -208,6 +232,8 @@ object Cleaned1 extends Logging {
         |    on recognition2_object.class_id = recognition2_class.class_id
         |join kukai_videos
         |on kukai_videos.videoId = media_id
+        |join task
+        |on task.video_id = media_id
         |union all
         |select recognition2_scene.media_id video_id,
         |       kukai_videos.videoName media_name,
@@ -226,21 +252,23 @@ object Cleaned1 extends Logging {
         |    on recognition2_scene.class_id = recognition2_class.class_id
         |join kukai_videos
         |on kukai_videos.videoId = media_id
+        |join task
+        |on task.video_id = media_id
         |""".stripMargin)
       //      .filter(s"video_id = $video_id")
       .createOrReplaceTempView("aaa")
 
     // 为后面过滤掉ts格式的视频
-    val filterList = spark.sql(
-      """
-        |SELECT * FROM bbb WHERE media_addr LIKE '%.ts'
-        |""".stripMargin)
-      .select("video_id")
-      .collect()
-    val array = filterList.map(_.get(0).toString)
-
-    // 广播出去ts的数组
-    val bFilterList = spark.sparkContext.broadcast(array)
+//    val filterList = spark.sql(
+//      """
+//        |SELECT * FROM bbb WHERE media_addr LIKE '%.ts'
+//        |""".stripMargin)
+//      .select("video_id")
+//      .collect()
+//    val array = filterList.map(_.get(0).toString)
+//
+//    // 广播出去ts的数组
+//    val bFilterList = spark.sparkContext.broadcast(array)
 
     spark.sql(
       """
@@ -268,17 +296,17 @@ object Cleaned1 extends Logging {
       .toJSON
       .rdd
 
-    val reduced = mysqlRDD
-      .filter(x => {
-        //        过滤掉自定义标签
-        val key = JSON.parseObject(x).get("class_type_id").toString
-        key.equals("1") || key.equals("2") || key.equals("3") || key.equals("4")
-      })
+//    val reduced: Unit = mysqlRDD
+//      .filter(x => {
+//        //        过滤掉自定义标签
+//        val key = JSON.parseObject(x).get("class_type_id").toString
+//        key.equals("1") || key.equals("2") || key.equals("3") || key.equals("4")
+//      })
       // 过滤掉ts格式的视频
-      .filter(x => {
-        val vid = JSON.parseObject(x).get("video_id").toString
-        !bFilterList.value.contains(vid)
-      })
+//      .filter(x => {
+//        val vid = JSON.parseObject(x).get("video_id").toString
+//        !bFilterList.value.contains(vid)
+//      })
 
       // 处理数据为json格式，以video_id为key的元组
       .map(x => {
