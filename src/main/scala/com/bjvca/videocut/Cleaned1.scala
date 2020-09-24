@@ -51,12 +51,12 @@ object Cleaned1 extends Logging {
     var i = 0
 
 
+
+
+
     val confUtil = new ConfUtils("application.conf")
 
     while (true) {
-
-      i = i + 1
-      logWarning("第" + i + "次合并任务开始...")
 
       // 创建sparkSession
       val spark: SparkSession = SparkSession.builder()
@@ -65,7 +65,8 @@ object Cleaned1 extends Logging {
         .config("spark.debug.maxToStringFields", "300")
         .getOrCreate()
 
-
+      i = i + 1
+      logWarning("第" + i + "次合并任务开始...")
 
 
       // 0.读取任务表
@@ -543,7 +544,7 @@ object Cleaned1 extends Logging {
         }
       })
 
-      value.saveJsonToEs("video_wave/doc", Map(
+      value.saveJsonToEs("test/doc", Map(
         //            "es.index.auto.create" -> "true",
         "es.nodes" -> confUtil.adxStreamingEsHost,
         "es.user" -> confUtil.adxStreamingEsUser,
@@ -552,7 +553,9 @@ object Cleaned1 extends Logging {
         //                "es.mapping.id" -> ""
       ))
 
+      spark.close()
       logWarning("第" + i + "次合并任务完成...")
+
 
       Thread.sleep(5000)
 
